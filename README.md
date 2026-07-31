@@ -4,17 +4,17 @@ Seven zero-dependency weather animations on HTML5 canvas. Pure JavaScript, no
 libraries, no external assets — every effect works offline, straight from
 `file://`, no build step.
 
-**Live demo:** https://oneamitj.github.io/weather-effects/
+**Live demo:** https://amitj.me/weather-effects/
 
 | Effect | Demo | Options |
 |--------|------|---------|
-| 🌧️ Rain | [rain.html](https://oneamitj.github.io/weather-effects/rain.html) | `angle` −45..45, `intensity`, `thunder` |
-| ❄️ Snow | [snow.html](https://oneamitj.github.io/weather-effects/snow.html) | `wind` −10..10, `intensity`, `settle` |
-| 🌤️ Sky | [sky.html](https://oneamitj.github.io/weather-effects/sky.html) | `wind`, `phase` dawn/day/dusk/night, `mode` clear/partly/cloudy, `intensity`, `birds` |
-| 🌫️ Fog | [fog.html](https://oneamitj.github.io/weather-effects/fog.html) | `wind` −10..10, `intensity`, `sun` |
-| 🧊 Hail | [hail.html](https://oneamitj.github.io/weather-effects/hail.html) | `wind` −10..10, `intensity`, `thunder` |
-| 💨 Wind | [wind.html](https://oneamitj.github.io/weather-effects/wind.html) | `wind` −10..10, `intensity`, `leaves` |
-| 🌨️ Sleet | [sleet.html](https://oneamitj.github.io/weather-effects/sleet.html) | `wind` −10..10, `intensity`, `slush` |
+| 🌧️ Rain | [rain.html](https://amitj.me/weather-effects/rain.html) | `angle` −45..45, `intensity`, `thunder` |
+| ❄️ Snow | [snow.html](https://amitj.me/weather-effects/snow.html) | `wind` −10..10, `intensity`, `settle` |
+| 🌤️ Sky | [sky.html](https://amitj.me/weather-effects/sky.html) | `wind`, `phase` dawn/day/dusk/night, `mode` clear/partly/cloudy, `intensity`, `birds` |
+| 🌫️ Fog | [fog.html](https://amitj.me/weather-effects/fog.html) | `wind` −10..10, `intensity`, `sun` |
+| 🧊 Hail | [hail.html](https://amitj.me/weather-effects/hail.html) | `wind` −10..10, `intensity`, `thunder` |
+| 💨 Wind | [wind.html](https://amitj.me/weather-effects/wind.html) | `wind` −10..10, `intensity`, `leaves` |
+| 🌨️ Sleet | [sleet.html](https://amitj.me/weather-effects/sleet.html) | `wind` −10..10, `intensity`, `slush` |
 
 `intensity` is always `'low' | 'mid' | 'high'`.
 
