@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather Effects — Canvas Rain, Snow, Fog, Hail, Wind, Sleet &amp; Sky Animations</title>
+  <meta name="description" content="Seven zero-dependency HTML5 canvas weather effects — animated rain, snow, fog, hail, wind, sleet and a full day sky. Pure JavaScript, no libraries, works offline." />
+  <meta name="keywords" content="canvas weather effects, javascript rain animation, canvas snow effect, fog animation, hail effect, wind animation, sleet, html5 canvas, zero dependencies" />
+  <meta name="author" content="Amit Joshi" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#0b0f1e" />
+  <link rel="canonical" href="https://oneamitj.github.io/weather-effects/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Weather Effects" />
+  <meta property="og:title" content="Weather Effects — Canvas Weather Animations in Pure JavaScript" />
+  <meta property="og:description" content="Animated rain, snow, fog, hail, wind, sleet and sky on HTML5 canvas. Zero dependencies, works offline." />
+  <meta property="og:url" content="https://oneamitj.github.io/weather-effects/" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Weather Effects — Canvas Weather Animations in Pure JavaScript" />
+  <meta name="twitter:description" content="Animated rain, snow, fog, hail, wind, sleet and sky on HTML5 canvas. Zero dependencies, works offline." />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Weather Effects",
+    "url": "https://oneamitj.github.io/weather-effects/",
+    "description": "Seven zero-dependency HTML5 canvas weather effects: rain, snow, fog, hail, wind, sleet and sky.",
+    "author": { "@type": "Person", "name": "Amit Joshi" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Canvas weather effects",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Rain", "url": "https://oneamitj.github.io/weather-effects/rain.html" },
+      { "@type": "ListItem", "position": 2, "name": "Snow", "url": "https://oneamitj.github.io/weather-effects/snow.html" },
+      { "@type": "ListItem", "position": 3, "name": "Sky", "url": "https://oneamitj.github.io/weather-effects/sky.html" },
+      { "@type": "ListItem", "position": 4, "name": "Fog", "url": "https://oneamitj.github.io/weather-effects/fog.html" },
+      { "@type": "ListItem", "position": 5, "name": "Hail", "url": "https://oneamitj.github.io/weather-effects/hail.html" },
+      { "@type": "ListItem", "position": 6, "name": "Wind", "url": "https://oneamitj.github.io/weather-effects/wind.html" },
+      { "@type": "ListItem", "position": 7, "name": "Sleet", "url": "https://oneamitj.github.io/weather-effects/sleet.html" }
+    ]
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { height: 100%; }
+    body {
+      min-height: 100%;
+      background: #0b0f1e;
+      color: #e6ebf5;
+      font: 15px/1.6 system-ui, sans-serif;
+    }
+    #bg { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 56px 24px 32px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header { text-align: center; margin-bottom: 40px; }
+    h1 {
+      font-size: clamp(28px, 5vw, 44px);
+      letter-spacing: -0.02em;
+      text-shadow: 0 2px 18px rgba(0, 0, 0, 0.6);
+    }
+    header p {
+      margin-top: 10px;
+      color: #b9c4d8;
+      text-shadow: 0 1px 10px rgba(0, 0, 0, 0.7);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: rgba(10, 14, 28, 0.72);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      padding: 18px;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .card:hover, .card:focus-visible {
+      transform: translateY(-3px);
+      border-color: var(--accent, #9fb4c8);
+    }
+    .card h2 {
+      font-size: 18px;
+      margin-bottom: 6px;
+      color: var(--accent, #e6ebf5);
+    }
+    .card h2 .icon { margin-right: 8px; }
+    .card p { color: #b9c4d8; font-size: 13.5px; }
+
+    #bgChip {
+      position: fixed;
+      left: 16px;
+      bottom: 16px;
+      z-index: 2;
+      background: rgba(10, 14, 28, 0.75);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 999px;
+      color: #cdd6e8;
+      font: 12.5px system-ui, sans-serif;
+      padding: 7px 14px;
+      cursor: pointer;
+    }
+    #bgChip:hover { border-color: rgba(255, 255, 255, 0.4); }
+
+    footer {
+      margin-top: auto;
+      padding-top: 48px;
+      text-align: center;
+      font-size: 13px;
+      color: #9aa6bc;
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.7);
+    }
+    footer a { color: #cdd6e8; }
+  </style>
+</head>
+<body>
+  <canvas id="bg" aria-hidden="true"></canvas>
+
+  <div class="wrap">
+    <header>
+      <h1>Weather Effects</h1>
+      <p>Seven zero-dependency canvas weather animations in pure JavaScript.
+         No libraries, no assets, works offline — even from <code>file://</code>.</p>
+    </header>
+
+    <main>
+      <nav class="grid" aria-label="Weather effect demos">
+        <a class="card" href="rain.html" style="--accent:#abc2e9">
+          <h2><span class="icon" aria-hidden="true">🌧️</span>Rain</h2>
+          <p>Slanted rain streaks with splashes, lightning bolts and thunder flashes. Adjustable angle and intensity.</p>
+        </a>
+        <a class="card" href="snow.html" style="--accent:#dbe7ff">
+          <h2><span class="icon" aria-hidden="true">❄️</span>Snow</h2>
+          <p>Four parallax layers with depth-of-field blur, wind gusts and snow settling on the ground.</p>
+        </a>
+        <a class="card" href="sky.html" style="--accent:#ffd27f">
+          <h2><span class="icon" aria-hidden="true">🌤️</span>Sky</h2>
+          <p>Day sky with volumetric clouds, dawn-to-night phases, a sun that dims behind cover and passing bird flocks.</p>
+        </a>
+        <a class="card" href="fog.html" style="--accent:#9fb4c8">
+          <h2><span class="icon" aria-hidden="true">🌫️</span>Fog</h2>
+          <p>Layered strata fog drifting with the wind, with a hazy sun breaking through.</p>
+        </a>
+        <a class="card" href="hail.html" style="--accent:#a9d3dd">
+          <h2><span class="icon" aria-hidden="true">🧊</span>Hail</h2>
+          <p>Ice stones that bounce and scatter, shed chips on impact and melt on the ground under a green storm sky.</p>
+        </a>
+        <a class="card" href="wind.html" style="--accent:#d4bd7f">
+          <h2><span class="icon" aria-hidden="true">💨</span>Wind</h2>
+          <p>Gust lines that sweep through in bursts, curl mid-air and dissolve, with tumbling autumn leaves.</p>
+        </a>
+        <a class="card" href="sleet.html" style="--accent:#b8ccd8">
+          <h2><span class="icon" aria-hidden="true">🌨️</span>Sleet</h2>
+          <p>Mixed rain, half-melted flakes and ticking ice pellets that build a slush layer on the ground.</p>
+        </a>
+      </nav>
+    </main>
+
+    <footer>
+      MIT License · <a href="https://github.com/oneamitj/weather-effects">Source on GitHub</a> · Amit Joshi
+    </footer>
+  </div>
+
+  <button id="bgChip" type="button" title="Cycle background effect">Background: … ⟳</button>
+
+  <script src="rain.js"></script>
+  <script src="snow.js"></script>
+  <script src="sky.js"></script>
+  <script src="fog.js"></script>
+  <script src="hail.js"></script>
+  <script src="wind.js"></script>
+  <script src="sleet.js"></script>
+  <script>
+    const EFFECTS = [
+      ['Rain', RainEffect],
+      ['Snow', SnowEffect],
+      ['Sky', SkyEffect],
+      ['Fog', FogEffect],
+      ['Hail', HailEffect],
+      ['Wind', WindEffect],
+      ['Sleet', SleetEffect],
+    ];
+    const canvas = document.getElementById('bg');
+    const chip = document.getElementById('bgChip');
+    let idx = (Math.random() * EFFECTS.length) | 0;
+    let fx = null;
+
+    function setBg(i) {
+      if (fx) fx.destroy();
+      idx = (i + EFFECTS.length) % EFFECTS.length;
+      fx = new EFFECTS[idx][1](canvas, {});
+      chip.textContent = `Background: ${EFFECTS[idx][0]} ⟳`;
+    }
+
+    setBg(idx);
+    chip.addEventListener('click', () => setBg(idx + 1));
+  </script>
+</body>
+</html>

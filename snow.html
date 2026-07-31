@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Snow Effect</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; overflow: hidden; background: #101a26; }
+    #snow { display: block; width: 100vw; height: 100vh; }
+
+    .panel {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background: rgba(10, 14, 28, 0.75);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 16px;
+      color: #cdd6e8;
+      font: 13px/1.5 system-ui, sans-serif;
+      display: grid;
+      gap: 12px;
+      min-width: 220px;
+      user-select: none;
+    }
+    .panel label { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .panel input[type="range"] { width: 120px; accent-color: #8fb6e8; }
+    .panel input[type="checkbox"] { accent-color: #8fb6e8; }
+    .seg { display: flex; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; overflow: hidden; }
+    .seg button {
+      flex: 1;
+      padding: 5px 0;
+      background: transparent;
+      border: 0;
+      color: #cdd6e8;
+      cursor: pointer;
+      font: inherit;
+    }
+    .seg button.active { background: #8fb6e8; color: #0b0f1e; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <canvas id="snow"></canvas>
+
+  <div class="panel">
+    <label>Wind <span id="windVal">0</span>
+      <input id="wind" type="range" min="-10" max="10" value="0" />
+    </label>
+    <div>
+      <div style="margin-bottom:6px">Intensity</div>
+      <div class="seg" id="intensity">
+        <button data-level="low">Low</button>
+        <button data-level="mid" class="active">Mid</button>
+        <button data-level="high">High</button>
+      </div>
+    </div>
+    <label>Settle <input id="settle" type="checkbox" checked /></label>
+  </div>
+
+  <script src="snow.js"></script>
+  <script>
+    const snow = new SnowEffect(document.getElementById('snow'), {
+      wind: 0,
+      intensity: 'mid',
+      settle: true,
+    });
+
+    const wind = document.getElementById('wind');
+    const windVal = document.getElementById('windVal');
+    wind.addEventListener('input', () => {
+      snow.setWind(+wind.value);
+      windVal.textContent = wind.value;
+    });
+
+    document.getElementById('intensity').addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      snow.setIntensity(btn.dataset.level);
+      for (const b of btn.parentElement.children) b.classList.toggle('active', b === btn);
+    });
+
+    document.getElementById('settle').addEventListener('change', (e) => snow.setSettle(e.target.checked));
+  </script>
+</body>
+</html>
