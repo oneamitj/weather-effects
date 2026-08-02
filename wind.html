@@ -3,7 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wind Effect</title>
+  <title>Wind Effect — Canvas Gust Lines and Tumbling Leaves | Weather Effects</title>
+  <meta name="description" content="Canvas wind: gust lines sweep through in bursts, curl mid-air and dissolve, carrying tumbling autumn leaves. Calm air stays empty between gusts." />
+  <meta name="author" content="Amit Joshi" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#46535e" />
+  <link rel="canonical" href="https://amitj.me/weather-effects/wind.html" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Weather Effects" />
+  <meta property="og:title" content="Wind Effect — Canvas Gust Lines and Tumbling Leaves" />
+  <meta property="og:description" content="Canvas wind: gust lines sweep through in bursts, curl mid-air and dissolve, carrying tumbling autumn leaves. Calm air stays empty between gusts." />
+  <meta property="og:url" content="https://amitj.me/weather-effects/wind.html" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Wind Effect — Canvas Gust Lines and Tumbling Leaves" />
+  <meta name="twitter:description" content="Canvas wind: gust lines sweep through in bursts, curl mid-air and dissolve, carrying tumbling autumn leaves. Calm air stays empty between gusts." />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Wind Effect",
+    "url": "https://amitj.me/weather-effects/wind.html",
+    "description": "Canvas wind: gust lines sweep through in bursts, curl mid-air and dissolve, carrying tumbling autumn leaves. Calm air stays empty between gusts.",
+    "isPartOf": { "@type": "WebSite", "name": "Weather Effects", "url": "https://amitj.me/weather-effects/" },
+    "author": { "@type": "Person", "name": "Amit Joshi" },
+    "license": "https://opensource.org/licenses/MIT"
+  }
+  </script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; overflow: hidden; background: #46535e; }
@@ -42,6 +69,7 @@
   </style>
 </head>
 <body>
+  <a href="./" style="position:fixed;top:16px;left:16px;z-index:5;background:rgba(10,14,28,0.75);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);border-radius:999px;color:#cdd6e8;font:12.5px system-ui,sans-serif;padding:7px 14px;text-decoration:none">&larr; All weather effects</a>
   <canvas id="wind"></canvas>
 
   <div class="panel">

@@ -3,7 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rain Effect</title>
+  <title>Rain Effect — Canvas Rain Animation with Thunder and Lightning | Weather Effects</title>
+  <meta name="description" content="Animated canvas rain with adjustable slant, three intensities, splashes and procedural lightning. Pure JavaScript, no libraries, works offline." />
+  <meta name="author" content="Amit Joshi" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#07131c" />
+  <link rel="canonical" href="https://amitj.me/weather-effects/rain.html" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Weather Effects" />
+  <meta property="og:title" content="Rain Effect — Canvas Rain Animation with Thunder and Lightning" />
+  <meta property="og:description" content="Animated canvas rain with adjustable slant, three intensities, splashes and procedural lightning. Pure JavaScript, no libraries, works offline." />
+  <meta property="og:url" content="https://amitj.me/weather-effects/rain.html" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Rain Effect — Canvas Rain Animation with Thunder and Lightning" />
+  <meta name="twitter:description" content="Animated canvas rain with adjustable slant, three intensities, splashes and procedural lightning. Pure JavaScript, no libraries, works offline." />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Rain Effect",
+    "url": "https://amitj.me/weather-effects/rain.html",
+    "description": "Animated canvas rain with adjustable slant, three intensities, splashes and procedural lightning. Pure JavaScript, no libraries, works offline.",
+    "isPartOf": { "@type": "WebSite", "name": "Weather Effects", "url": "https://amitj.me/weather-effects/" },
+    "author": { "@type": "Person", "name": "Amit Joshi" },
+    "license": "https://opensource.org/licenses/MIT"
+  }
+  </script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; overflow: hidden; background: #07131c; }
@@ -43,6 +70,7 @@
   </style>
 </head>
 <body>
+  <a href="./" style="position:fixed;top:16px;left:16px;z-index:5;background:rgba(10,14,28,0.75);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);border-radius:999px;color:#cdd6e8;font:12.5px system-ui,sans-serif;padding:7px 14px;text-decoration:none">&larr; All weather effects</a>
   <canvas id="rain"></canvas>
 
   <div class="panel">

@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Weather Effects — Canvas Rain, Snow, Fog, Hail, Wind, Sleet &amp; Sky Animations</title>
-  <meta name="description" content="Seven zero-dependency HTML5 canvas weather effects — animated rain, snow, fog, hail, wind, sleet and a full day sky. Pure JavaScript, no libraries, works offline." />
-  <meta name="keywords" content="canvas weather effects, javascript rain animation, canvas snow effect, fog animation, hail effect, wind animation, sleet, html5 canvas, zero dependencies" />
+  <meta name="description" content="Seven zero-dependency HTML5 canvas weather effects — animated rain, snow, fog, hail, wind, sleet and a full day sky — plus live time and weather cards built from them. Pure JavaScript, no libraries, works offline." />
+  <meta name="keywords" content="canvas weather effects, javascript rain animation, canvas snow effect, fog animation, hail effect, wind animation, sleet, weather card ui, animated weather widget, html5 canvas, zero dependencies" />
   <meta name="author" content="Amit Joshi" />
   <meta name="robots" content="index, follow" />
   <meta name="theme-color" content="#0b0f1e" />
@@ -14,11 +14,11 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Weather Effects" />
   <meta property="og:title" content="Weather Effects — Canvas Weather Animations in Pure JavaScript" />
-  <meta property="og:description" content="Animated rain, snow, fog, hail, wind, sleet and sky on HTML5 canvas. Zero dependencies, works offline." />
+  <meta property="og:description" content="Animated rain, snow, fog, hail, wind, sleet and sky on HTML5 canvas, plus ready-made time and weather cards. Zero dependencies, works offline." />
   <meta property="og:url" content="https://amitj.me/weather-effects/" />
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Weather Effects — Canvas Weather Animations in Pure JavaScript" />
-  <meta name="twitter:description" content="Animated rain, snow, fog, hail, wind, sleet and sky on HTML5 canvas. Zero dependencies, works offline." />
+  <meta name="twitter:description" content="Animated rain, snow, fog, hail, wind, sleet and sky on HTML5 canvas, plus ready-made time and weather cards. Zero dependencies, works offline." />
 
   <script type="application/ld+json">
   {
@@ -26,7 +26,7 @@
     "@type": "WebSite",
     "name": "Weather Effects",
     "url": "https://amitj.me/weather-effects/",
-    "description": "Seven zero-dependency HTML5 canvas weather effects: rain, snow, fog, hail, wind, sleet and sky.",
+    "description": "Seven zero-dependency HTML5 canvas weather effects — rain, snow, fog, hail, wind, sleet and sky — plus live time and weather cards built from them.",
     "author": { "@type": "Person", "name": "Amit Joshi" }
   }
   </script>
@@ -42,7 +42,8 @@
       { "@type": "ListItem", "position": 4, "name": "Fog", "url": "https://amitj.me/weather-effects/fog.html" },
       { "@type": "ListItem", "position": 5, "name": "Hail", "url": "https://amitj.me/weather-effects/hail.html" },
       { "@type": "ListItem", "position": 6, "name": "Wind", "url": "https://amitj.me/weather-effects/wind.html" },
-      { "@type": "ListItem", "position": 7, "name": "Sleet", "url": "https://amitj.me/weather-effects/sleet.html" }
+      { "@type": "ListItem", "position": 7, "name": "Sleet", "url": "https://amitj.me/weather-effects/sleet.html" },
+      { "@type": "ListItem", "position": 8, "name": "Weather Cards", "url": "https://amitj.me/weather-effects/cards/" }
     ]
   }
   </script>
@@ -108,6 +109,10 @@
     .card h2 .icon { margin-right: 8px; }
     .card p { color: #b9c4d8; font-size: 13.5px; }
 
+    .card.feature { grid-column: 1 / -1; }
+    .card.feature p { max-width: 68ch; }
+    .card.feature .more { display: inline-block; margin-top: 10px; font-size: 13px; color: var(--accent); }
+
     #bgChip {
       position: fixed;
       left: 16px;
@@ -141,12 +146,20 @@
   <div class="wrap">
     <header>
       <h1>Weather Effects</h1>
-      <p>Seven zero-dependency canvas weather animations in pure JavaScript.
-         No libraries, no assets, works offline — even from <code>file://</code>.</p>
+      <p>Seven zero-dependency canvas weather animations in pure JavaScript, and a set of
+         time and weather cards built from them. No libraries, no assets, works offline —
+         even from <code>file://</code>.</p>
     </header>
 
     <main>
       <nav class="grid" aria-label="Weather effect demos">
+        <a class="card feature" href="cards/" style="--accent:#c4a7f5">
+          <h2><span class="icon" aria-hidden="true">🕘</span>Weather Cards</h2>
+          <p>The effects put to work as UI: clock cards with the local sky living behind them,
+            across all ten conditions and at both card and list size. Each card shows the real
+            current time for its city, and the time of day is scrubbable.</p>
+          <span class="more">Open the cards →</span>
+        </a>
         <a class="card" href="rain.html" style="--accent:#abc2e9">
           <h2><span class="icon" aria-hidden="true">🌧️</span>Rain</h2>
           <p>Slanted rain streaks with splashes, lightning bolts and thunder flashes. Adjustable angle and intensity.</p>

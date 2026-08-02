@@ -18,6 +18,17 @@ libraries, no external assets — every effect works offline, straight from
 
 `intensity` is always `'low' | 'mid' | 'high'`.
 
+## Weather cards
+
+**[amitj.me/weather-effects/cards/](https://amitj.me/weather-effects/cards/)** — the effects put to
+work as UI: clock cards with the local sky living behind them, across all ten conditions and at both
+card and list size. Every card shows the real current time for its city, and the time of day is
+scrubbable, so you can watch the whole grid crossfade from dawn to night.
+
+The cards use a separate build of the effects under [`cards/`](cards/) that adds a `sizeMul` option,
+scaling particles, clouds and drifts down so the detail still reads inside a 358×150 card — or a
+58-pixel list row.
+
 ## Usage
 
 Each effect is a single self-contained JS file exposing one global class.

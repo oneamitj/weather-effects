@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather Cards — Live Time &amp; Weather UI on HTML5 Canvas</title>
+  <meta name="description" content="Time and weather cards with a live animated sky behind the clock — clear, cloudy, rain, thunder, snow, hail, sleet, fog and wind. Real local time per city, zero dependencies, pure canvas." />
+  <meta name="keywords" content="weather card ui, animated weather widget, javascript clock card, canvas weather background, live weather ui, world clock cards, html5 canvas widget" />
+  <meta name="author" content="Amit Joshi" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#0b1220" />
+  <link rel="canonical" href="https://amitj.me/weather-effects/cards/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Weather Effects" />
+  <meta property="og:title" content="Weather Cards — Live Time &amp; Weather UI on HTML5 Canvas" />
+  <meta property="og:description" content="Clock cards with a living sky behind them: sun, clouds, rain, snow, hail, sleet, fog and wind, all drawn on canvas with no libraries." />
+  <meta property="og:url" content="https://amitj.me/weather-effects/cards/" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Weather Cards — Live Time &amp; Weather UI on HTML5 Canvas" />
+  <meta name="twitter:description" content="Clock cards with a living sky behind them: sun, clouds, rain, snow, hail, sleet, fog and wind, all drawn on canvas with no libraries." />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Weather Cards",
+    "url": "https://amitj.me/weather-effects/cards/",
+    "description": "Time and weather cards with a live animated canvas sky behind the clock, covering ten weather conditions and showing real local time for each city.",
+    "isPartOf": { "@type": "WebSite", "name": "Weather Effects", "url": "https://amitj.me/weather-effects/" },
+    "author": { "@type": "Person", "name": "Amit Joshi" },
+    "license": "https://opensource.org/licenses/MIT",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Weather Effects", "item": "https://amitj.me/weather-effects/" },
+        { "@type": "ListItem", "position": 2, "name": "Weather Cards", "item": "https://amitj.me/weather-effects/cards/" }
+      ]
+    }
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #eef1fb;
+      color: #1e2438;
+      font: 15px/1.6 system-ui, sans-serif;
+      padding: 32px 24px 64px;
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+    body.dark { background: #0b1220; color: #e2e8f0; }
+
+    .page { max-width: 1140px; margin: 0 auto; }
+    .back { display: inline-block; font-size: 13px; color: #7c3aed; text-decoration: none; margin-bottom: 14px; }
+    .back:hover { text-decoration: underline; }
+    h1 { font-size: clamp(24px, 4vw, 34px); letter-spacing: -0.02em; }
+    .lede { max-width: 62ch; margin-top: 8px; opacity: 0.75; }
+
+    /* Controls */
+    .bar {
+      display: flex; gap: 18px; align-items: center; flex-wrap: wrap;
+      font-size: 13px; margin: 24px 0 8px;
+    }
+    .bar b { font-weight: 600; }
+    .seg { display: inline-flex; border: 1px solid #94a3b8; border-radius: 8px; overflow: hidden; }
+    .seg button { border: 0; background: #fff; padding: 5px 12px; cursor: pointer; font: inherit; color: #1e2438; }
+    .seg button.on { background: #7c3aed; color: #fff; }
+    .dark .seg { border-color: #475569; }
+    .dark .seg button { background: #1e293b; color: #e2e8f0; }
+    .dark .seg button.on { background: #7c3aed; color: #fff; }
+    .hint { font-size: 13px; opacity: 0.6; max-width: 60ch; }
+
+    section { margin-top: 34px; }
+    section h2 { font-size: 17px; letter-spacing: -0.01em; }
+    section p { font-size: 13.5px; opacity: 0.7; max-width: 66ch; margin: 4px 0 12px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 358px)); gap: 14px; }
+
+    /* Card surfaces */
+    .sky-card, .sky-row {
+      position: relative; overflow: hidden; isolation: isolate;
+      border: 1px solid rgba(124, 58, 237, 0.14);
+      box-shadow: 0 4px 16px rgba(124, 58, 237, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      --tp: #ffffff;
+      --ts: rgba(255, 255, 255, 0.78);
+      --tt: rgba(255, 255, 255, 0.62);
+      --tq: rgba(255, 255, 255, 0.48);
+      --chip: rgba(255, 255, 255, 0.22);
+    }
+    .sky-card { height: 150px; border-radius: 16px; padding: 16px; }
+    .sky-row { height: 58px; border-radius: 12px; padding: 9px 16px; }
+    canvas.sky { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+    /* Scrims keep the text readable over a sky that changes brightness all day. */
+    .scrim { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(
+      to bottom,
+      rgba(8, 12, 24, 0.32) 0%, rgba(8, 12, 24, 0.12) 26%,
+      rgba(8, 12, 24, 0) 42%, rgba(8, 12, 24, 0) 58%,
+      rgba(8, 12, 24, 0.16) 78%, rgba(8, 12, 24, 0.42) 100%); }
+    .scrim-list { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(
+      to bottom, rgba(8, 12, 24, 0.18) 0%, rgba(8, 12, 24, 0.34) 100%); }
+
+    .content { position: relative; height: 100%; display: flex; flex-direction: column; }
+    .name { color: var(--tp); font-weight: 600; font-size: 16px; display: flex; gap: 6px; align-items: center; }
+    .chip { font-size: 10px; padding: 2px 6px; border-radius: 99px; background: var(--chip); color: var(--ts); }
+    .sub { color: var(--tq); font-size: 11px; margin-top: 2px; }
+    .mid { flex: 1; display: flex; align-items: flex-end; justify-content: space-between; }
+    .clock { color: var(--tp); font-weight: 700; font-size: 46px; line-height: 1; letter-spacing: -2px; font-variant-numeric: tabular-nums; }
+    .wx { text-align: right; }
+    .wx .t { color: var(--tp); font-weight: 600; font-size: 18px; }
+    .wx .m { color: var(--tt); font-size: 10px; }
+    .wx .q { color: var(--tq); font-size: 10px; }
+    .bot { display: flex; justify-content: space-between; gap: 10px; margin-top: 6px; }
+    .bot span { color: var(--tt); font-size: 12px; }
+    .bot .q { color: var(--tq); }
+
+    .rowc { position: relative; display: flex; align-items: center; gap: 12px; height: 100%; }
+    .rowc .label { flex: 1; min-width: 0; }
+    .rowc .rname { color: var(--tp); font-size: 14px; font-weight: 500; }
+    .rowc .rsub { color: var(--tq); font-size: 11px; }
+    .rowc .rtime { color: var(--tp); font-size: 24px; font-weight: 700; letter-spacing: -0.5px; font-variant-numeric: tabular-nums; }
+
+    footer { margin-top: 52px; font-size: 13px; opacity: 0.6; }
+    footer a { color: inherit; }
+  </style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <a class="back" href="../">← All weather effects</a>
+    <h1>Weather Cards</h1>
+    <p class="lede">The same canvas effects, used the way an app would actually use them: a clock
+      card with the local sky living behind it. Every card shows the real current time for its
+      city, and the sky, clouds and precipitation are drawn live — no images, no video, no
+      libraries.</p>
+  </header>
+
+  <div class="bar">
+    <b>Time of day</b>
+    <span class="seg" id="phase">
+      <button data-v="dawn">Dawn</button><button data-v="day" class="on">Day</button><button data-v="dusk">Dusk</button><button data-v="night">Night</button>
+    </span>
+    <b>Weather intensity</b>
+    <span class="seg" id="intensity">
+      <button data-v="low">Light</button><button data-v="mid" class="on">Moderate</button><button data-v="high">Heavy</button>
+    </span>
+    <b>App theme</b>
+    <span class="seg" id="theme">
+      <button data-v="light" class="on">Light</button><button data-v="dark">Dark</button>
+    </span>
+  </div>
+  <p class="hint">Switch the time of day and every card crossfades to the new light — sun position,
+    sky colour, haze and cloud shading all move together.</p>
+
+  <main>
+    <section>
+      <h2>Clear, partly cloudy, cloudy</h2>
+      <p>The three base skies. Cloud cover thickens from left to right, and the sun dims whenever a
+        cloud drifts in front of it.</p>
+      <div class="grid" id="cards"></div>
+    </section>
+
+    <section>
+      <h2>Rain and thunderstorms</h2>
+      <p>Rain falls over the cloudy sky. The storm card adds lightning that lights up the whole
+        card for a moment when it strikes.</p>
+      <div class="grid" id="raincards"></div>
+    </section>
+
+    <section>
+      <h2>Snow</h2>
+      <p>Flakes drift down in parallax layers and settle into a drift along the bottom edge.</p>
+      <div class="grid" id="snowcards"></div>
+    </section>
+
+    <section>
+      <h2>Hail</h2>
+      <p>A thunderstorm with hail: stones bounce off the bottom of the card, shed ice chips on
+        impact and melt where they land.</p>
+      <div class="grid" id="hailcards"></div>
+    </section>
+
+    <section>
+      <h2>Sleet</h2>
+      <p>Rain, half-melted flakes and ice pellets falling together, slowly building a slush line
+        across the bottom.</p>
+      <div class="grid" id="sleetcards"></div>
+    </section>
+
+    <section>
+      <h2>Fog</h2>
+      <p>Fog banks drift across the sky and pool near the ground, thin enough to still let the
+        light through.</p>
+      <div class="grid" id="fogcards"></div>
+    </section>
+
+    <section>
+      <h2>Wind</h2>
+      <p>Gusts arrive in bursts, curl through the card and fade, carrying leaves with them. Wind
+        layers on top of any other condition instead of replacing it.</p>
+      <div class="grid" id="windcards"></div>
+    </section>
+
+    <section>
+      <h2>Compact rows</h2>
+      <p>The same cards at list height, for a saved-locations screen. The effects scale down with
+        the card so the detail still reads at 58 pixels tall.</p>
+      <div class="grid" id="rows"></div>
+    </section>
+  </main>
+
+  <footer>
+    MIT License · <a href="https://github.com/oneamitj/weather-effects">Source on GitHub</a> · Amit Joshi
+  </footer>
+</div>
+
+<script src="skyEffect.js"></script>
+<script src="rainEffect.js"></script>
+<script src="snowEffect.js"></script>
+<script src="hailEffect.js"></script>
+<script src="sleetEffect.js"></script>
+<script src="fogEffect.js"></script>
+<script src="windEffect.js"></script>
+<script>
+const { SkyEffect } = SkyModule;
+const { RainEffect } = RainModule;
+const { SnowEffect } = SnowModule;
+const { HailEffect } = HailModule;
+const { SleetEffect } = SleetModule;
+const { FogEffect } = FogModule;
+const { WindEffect } = WindModule;
+
+const WIND_SPEED = { low: 4, mid: 6, high: 8 };
+
+// Sample forecast per condition. Clock times are never hard-coded: each card
+// reads the real current time for its own IANA zone.
+const CITIES = {
+  clear:   { name: 'Kathmandu',     region: 'Nepal',              tz: 'Asia/Kathmandu',      cond: 'Clear',         temp: 24, feels: 25, hi: 27, lo: 14, next: 'Sunny 26°' },
+  partly:  { name: 'Kolkata',       region: 'West Bengal, India', tz: 'Asia/Kolkata',        cond: 'Partly cloudy', temp: 31, feels: 36, hi: 33, lo: 27, next: 'Humid 32°' },
+  cloudy:  { name: 'London',        region: 'United Kingdom',     tz: 'Europe/London',       cond: 'Cloudy',        temp: 14, feels: 12, hi: 16, lo: 9,  next: 'Overcast 15°' },
+  rain:    { name: 'Mumbai',        region: 'Maharashtra, India', tz: 'Asia/Kolkata',        cond: 'Rain',          temp: 27, feels: 31, hi: 29, lo: 25, next: 'Heavy rain 28°' },
+  thunder: { name: 'Jacksonville',  region: 'Florida, US',        tz: 'America/New_York',    cond: 'Thunderstorms', temp: 29, feels: 34, hi: 31, lo: 23, next: 'Storms 30°' },
+  snow:    { name: 'Reykjavík',     region: 'Iceland',            tz: 'Atlantic/Reykjavik',  cond: 'Snow',          temp: -2, feels: -8, hi: 0,  lo: -5, next: 'Snow showers -1°' },
+  hail:    { name: 'Denver',        region: 'Colorado, US',       tz: 'America/Denver',      cond: 'Hail',          temp: 8,  feels: 5,  hi: 12, lo: 1,  next: 'Clearing 12°' },
+  sleet:   { name: 'Oslo',          region: 'Norway',             tz: 'Europe/Oslo',         cond: 'Sleet',         temp: 0,  feels: -4, hi: 2,  lo: -3, next: 'Sleet 1°' },
+  fog:     { name: 'San Francisco', region: 'California, US',     tz: 'America/Los_Angeles', cond: 'Fog',           temp: 12, feels: 11, hi: 17, lo: 11, next: 'Morning fog 13°' },
+  windy:   { name: 'Wellington',    region: 'New Zealand',        tz: 'Pacific/Auckland',    cond: 'Windy',         temp: 16, feels: 13, hi: 18, lo: 11, next: 'Gusty 17°' },
+};
+
+const timeFmt = {};
+function localTime(tz) {
+  if (!timeFmt[tz]) {
+    timeFmt[tz] = new Intl.DateTimeFormat('en-GB', {
+      timeZone: tz, hour: 'numeric', minute: '2-digit', hourCycle: 'h23',
+    });
+  }
+  return timeFmt[tz].format(new Date());
+}
+
+// "IST · GMT+5:30" where an abbreviation exists, otherwise just the offset.
+function zoneLabel(tz) {
+  const part = (style) => new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: style })
+    .formatToParts(new Date()).find((p) => p.type === 'timeZoneName').value;
+  const abbr = part('short');
+  const offset = part('shortOffset');
+  return abbr === offset ? offset : `${abbr} · ${offset}`;
+}
+
+const skyEffects = [];
+const rainEffects = [];
+const snowEffects = [];
+const hailEffects = [];
+const sleetEffects = [];
+const fogEffects = [];
+const windEffects = [];
+const clocks = [];
+
+function makeTile({ mode, rain, snow, hail, sleet, fog, wind, host, isRow, you }) {
+  const key = hail ? 'hail' : rain ? (rain.thunder ? 'thunder' : 'rain') : snow ? 'snow'
+    : sleet ? 'sleet' : fog ? 'fog' : wind ? 'windy' : mode;
+  const c = CITIES[key];
+  const el = document.createElement('div');
+  el.className = isRow ? 'sky-row' : 'sky-card';
+  const fx = (rain || snow || sleet || fog ? '<canvas class="sky fx"></canvas>' : '')
+    + (hail ? '<canvas class="sky fxh"></canvas>' : '')
+    + (wind ? '<canvas class="sky fxw"></canvas>' : '');
+  el.innerHTML = isRow
+    ? `<canvas class="sky"></canvas>${fx}<div class="scrim-list"></div>
+       <div class="rowc">
+         <div class="label">
+           <div class="rname">${c.name}</div>
+           <div class="rsub">${c.cond} · ${zoneLabel(c.tz)}</div>
+         </div>
+         <div class="wx">
+           <div class="t" style="font-size:14px">${c.temp}°</div>
+           <div class="q">Feels ${c.feels}°</div>
+         </div>
+         <div class="rtime" data-tz="${c.tz}">${localTime(c.tz)}</div>
+       </div>`
+    : `<canvas class="sky"></canvas>${fx}<div class="scrim"></div>
+       <div class="content">
+         <div class="name">${c.name}${you ? ' <span class="chip">Your location</span>' : ''}</div>
+         <div class="sub">${c.region} · ${c.cond}</div>
+         <div class="mid">
+           <div class="clock" data-tz="${c.tz}">${localTime(c.tz)}</div>
+           <div class="wx">
+             <div class="t">${c.temp}°</div>
+             <div class="m">Feels like ${c.feels}°</div>
+             <div class="q">H ${c.hi}° L ${c.lo}°</div>
+           </div>
+         </div>
+         <div class="bot">
+           <span>Tomorrow · ${c.next}</span>
+           <span class="q">${zoneLabel(c.tz)}</span>
+         </div>
+       </div>`;
+  document.getElementById(host).appendChild(el);
+  for (const node of el.querySelectorAll('[data-tz]')) clocks.push(node);
+
+  const sizeMul = isRow ? 0.35 : 0.6;
+  skyEffects.push(new SkyEffect(el.querySelector('canvas.sky'), {
+    wind: 2,
+    phase: 'day',
+    mode,
+    intensity: rain ? 'high' : fog ? 'low' : 'mid',
+    birds: !isRow && !rain && !snow && !sleet && !fog && !wind,
+    sizeMul,
+  }));
+  if (rain) {
+    rainEffects.push(new RainEffect(el.querySelector('canvas.fx'), {
+      angle: 12, intensity: 'mid', thunder: rain.thunder, sizeMul,
+    }));
+  }
+  if (snow) {
+    snowEffects.push(new SnowEffect(el.querySelector('canvas.fx'), {
+      wind: 0, intensity: 'mid', settle: true, sizeMul,
+    }));
+  }
+  if (hail) {
+    hailEffects.push(new HailEffect(el.querySelector('canvas.fxh'), {
+      wind: 2, intensity: 'mid', sizeMul,
+    }));
+  }
+  if (sleet) {
+    sleetEffects.push(new SleetEffect(el.querySelector('canvas.fx'), {
+      wind: 3, intensity: 'mid', slush: true, sizeMul,
+    }));
+  }
+  if (fog) {
+    fogEffects.push(new FogEffect(el.querySelector('canvas.fx'), {
+      wind: 3, intensity: 'mid',
+    }));
+  }
+  if (wind) {
+    windEffects.push(new WindEffect(el.querySelector('canvas.fxw'), {
+      wind: WIND_SPEED.mid, intensity: 'mid', leaves: true, sizeMul,
+    }));
+  }
+}
+
+['clear', 'partly', 'cloudy'].forEach((mode, i) => makeTile({ mode, host: 'cards', you: i === 0 }));
+makeTile({ mode: 'cloudy', rain: { thunder: false }, host: 'raincards' });
+makeTile({ mode: 'cloudy', rain: { thunder: true }, host: 'raincards' });
+makeTile({ mode: 'cloudy', snow: true, host: 'snowcards' });
+makeTile({ mode: 'cloudy', rain: { thunder: true }, hail: true, host: 'hailcards' });
+makeTile({ mode: 'cloudy', sleet: true, host: 'sleetcards' });
+makeTile({ mode: 'cloudy', fog: true, host: 'fogcards' });
+makeTile({ mode: 'partly', wind: true, host: 'windcards' });
+
+['clear', 'partly', 'cloudy'].forEach((mode) => makeTile({ mode, host: 'rows', isRow: true }));
+makeTile({ mode: 'cloudy', rain: { thunder: false }, host: 'rows', isRow: true });
+makeTile({ mode: 'cloudy', rain: { thunder: true }, host: 'rows', isRow: true });
+makeTile({ mode: 'cloudy', snow: true, host: 'rows', isRow: true });
+makeTile({ mode: 'cloudy', rain: { thunder: true }, hail: true, host: 'rows', isRow: true });
+makeTile({ mode: 'cloudy', sleet: true, host: 'rows', isRow: true });
+makeTile({ mode: 'cloudy', fog: true, host: 'rows', isRow: true });
+makeTile({ mode: 'partly', wind: true, host: 'rows', isRow: true });
+
+setInterval(() => {
+  for (const node of clocks) node.textContent = localTime(node.dataset.tz);
+}, 1000);
+
+function seg(id, fn) {
+  document.getElementById(id).addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    for (const x of b.parentElement.children) x.classList.toggle('on', x === b);
+    fn(b.dataset.v);
+  });
+}
+seg('phase', (v) => skyEffects.forEach((s) => s.setPhase(v)));
+seg('intensity', (v) => {
+  skyEffects.forEach((s) => s.setIntensity(v));
+  rainEffects.forEach((r) => r.setIntensity(v));
+  snowEffects.forEach((s) => s.setIntensity(v));
+  hailEffects.forEach((h) => h.setIntensity(v));
+  sleetEffects.forEach((s) => s.setIntensity(v));
+  fogEffects.forEach((f) => f.setIntensity(v));
+  windEffects.forEach((w) => { w.setIntensity(v); w.setWind(WIND_SPEED[v]); });
+});
+seg('theme', (v) => document.body.classList.toggle('dark', v === 'dark'));
+</script>
+</body>
+</html>
