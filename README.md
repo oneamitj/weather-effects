@@ -96,6 +96,13 @@ open index.html        # or just double-click it
 No server needed. A server is only worth starting if you want the exact same
 paths as the live demo.
 
+Or run it in Docker, served by nginx:
+
+```sh
+docker build -t weather-effects .
+docker run --rm -p 8080:80 weather-effects   # then open http://localhost:8080
+```
+
 ## License
 
 [MIT](LICENSE) © Amit Joshi
